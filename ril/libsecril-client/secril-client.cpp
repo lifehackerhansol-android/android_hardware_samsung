@@ -81,7 +81,7 @@ namespace android {
 #define OEM_SND_TYPE_HEADSET        0x31 // Headset(0x30) + Voice(0x01)
 #define OEM_SND_TYPE_BTVOICE        0x41 // BT(0x40) + Voice(0x01)
 
-#ifdef SAMSUNG_NEXT_GEN_MODEM
+#if defined(SAMSUNG_NEXT_GEN_MODEM)
 #define OEM_SND_AUDIO_PATH_EARPIECE           0x01
 #define OEM_SND_AUDIO_PATH_HEADSET            0x02
 #define OEM_SND_AUDIO_PATH_HFK                0x06
@@ -94,6 +94,17 @@ namespace android {
 #define OEM_SND_AUDIO_PATH_MIC2               0x0B
 #define OEM_SND_AUDIO_PATH_BT_WB              0x0C
 #define OEM_SND_AUDIO_PATH_BT_WB_NSEC_OFF     0x0D
+#elif defined(SAMSUNG_CMC221_MODEM)
+#define OEM_SND_AUDIO_PATH_EARPIECE     0x01
+#define OEM_SND_AUDIO_PATH_HEADSET      0x02
+#define OEM_SND_AUDIO_PATH_HFK                0x03
+#define OEM_SND_AUDIO_PATH_BLUETOOTH    0x04
+#define OEM_SND_AUDIO_PATH_STEREO_BLUETOOTH   0x05
+#define OEM_SND_AUDIO_PATH_SPEAKER      0x06
+#define OEM_SND_AUDIO_PATH_HEADPHONE      0x07
+#define OEM_SND_AUDIO_PATH_BT_NSEC_OFF  0x08
+#define OEM_SND_AUDIO_PATH_BT_WB  0x09
+#define OEM_SND_AUDIO_PATH_BT_WB_NSEC_OFF  0x0A
 #else
 #define OEM_SND_AUDIO_PATH_EARPIECE     0x01
 #define OEM_SND_AUDIO_PATH_HEADSET      0x02
@@ -1195,7 +1206,33 @@ static char ConvertSoundType(SoundType type) {
     }
 }
 
+#if defined(SAMSUNG_CMC221_MODEM)
+static char ConvertAudioPath(AudioPath path) {
+    switch (path) {
+        case SOUND_AUDIO_PATH_EARPIECE:
+            return OEM_SND_AUDIO_PATH_EARPIECE;
+        case SOUND_AUDIO_PATH_HEADSET:
+            return OEM_SND_AUDIO_PATH_HEADSET;
+        case SOUND_AUDIO_PATH_SPEAKER:
+            return OEM_SND_AUDIO_PATH_SPEAKER;
+        case SOUND_AUDIO_PATH_BLUETOOTH:
+            return OEM_SND_AUDIO_PATH_BLUETOOTH;
+        case SOUND_AUDIO_PATH_STEREO_BT:
+            return OEM_SND_AUDIO_PATH_STEREO_BLUETOOTH;
+        case SOUND_AUDIO_PATH_HEADPHONE:
+            return OEM_SND_AUDIO_PATH_HEADPHONE;
+        case SOUND_AUDIO_PATH_BLUETOOTH_NO_NR:
+            return OEM_SND_AUDIO_PATH_BT_NSEC_OFF;
+        case SOUND_AUDIO_PATH_BLUETOOTH_WB:
+            return OEM_SND_AUDIO_PATH_BT_WB;
+        case SOUND_AUDIO_PATH_BLUETOOTH_WB_NO_NR:
+            return OEM_SND_AUDIO_PATH_BT_WB_NSEC_OFF;
 
+        default:
+            return OEM_SND_AUDIO_PATH_EARPIECE;
+    }
+}
+#else
 static char ConvertAudioPath(AudioPath path) {
     switch (path) {
         case SOUND_AUDIO_PATH_EARPIECE:
@@ -1220,11 +1257,12 @@ static char ConvertAudioPath(AudioPath path) {
             return OEM_SND_AUDIO_PATH_BT_WB;
         case SOUND_AUDIO_PATH_BLUETOOTH_WB_NO_NR:
             return OEM_SND_AUDIO_PATH_BT_WB_NSEC_OFF;
-
+        
         default:
             return OEM_SND_AUDIO_PATH_EARPIECE;
     }
 }
+#endif
 
 
 static void * RxReaderFunc(void *param) {

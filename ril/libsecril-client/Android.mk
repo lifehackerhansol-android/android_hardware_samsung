@@ -21,6 +21,9 @@ endif
 ifneq ($(filter m7450 mdm9x35 ss333 xmm7260,$(BOARD_MODEM_TYPE)),)
 LOCAL_CFLAGS += -DSAMSUNG_NEXT_GEN_MODEM
 endif
+ifeq ($(BOARD_MODEM_TYPE),cmc221)
+LOCAL_CFLAGS += -DSAMSUNG_CMC221_MODEM
+endif
 
 LOCAL_MODULE:= libsecril-client
 LOCAL_PRELINK_MODULE := false
